@@ -32,6 +32,12 @@ gh issue create --title "Short title" --label "chore" --body "What and why."
 
 Capture the issue number from the output URL (e.g. `https://github.com/org/repo/issues/42` → `#42`).
 
+**Multi-module repos:** also add a `module:` label to scope the issue to a specific module (e.g. `module:iulink-ui`). Add the label first if it doesn't exist:
+```bash
+gh label create module:iulink-ui --color "#bfd4f2" --description "iulink-ui module"
+gh issue create --title "Short title" --label "feature" --label "module:iulink-ui" --body "..."
+```
+
 If labels don't exist yet in the repo, create them first:
 ```bash
 gh label create feature --color "#0075ca" --description "New feature or request"
@@ -75,6 +81,7 @@ Add an entry to the `"issues"` array:
   "id": 42,
   "type": "feature",
   "title": "Short title matching the GitHub issue",
+  "module": "iulink-ui",
   "status": "planned",
   "plan": "plans/042-slug.md",
   "branch": "feat/42-slug",
@@ -85,6 +92,8 @@ Add an entry to the `"issues"` array:
 
 Valid `type` values: `feature`, `bug`, `chore`
 Valid `status` values: `planned`, `in-progress`, `review`, `done`
+
+`module` is optional. Omit it for root-level work. Use it when the change is scoped to a specific sub-module or sub-directory (e.g. `iulink-ui`, `iulink-tui`, `core`).
 
 Update `status` as work progresses.
 
@@ -118,6 +127,12 @@ git commit -m "fix: handle edge case in thing (#42)"
 git commit -m "chore: update deps (#42)"
 ```
 
+**Multi-module repos:** use the Conventional Commits scope to identify the module:
+```bash
+git commit -m "feat(iulink-ui): add dark mode (#42)"
+git commit -m "fix(core): handle nil peer conn (#42)"
+```
+
 ---
 
 ## Step 7 — Open PR
@@ -129,7 +144,7 @@ gh pr create \
 ```
 
 Rules:
-- Title: same convention as commits
+- Title: same convention as commits — include scope if module-scoped: `feat(iulink-ui): add thing (#42)`
 - Body: `Closes #NNN` must be on its own line (GitHub auto-closes on merge)
 - Update `status` in `plans/registry.json` to `"review"`
 

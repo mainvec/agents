@@ -36,15 +36,17 @@ Update task status and notes as work progresses. This is the agent's working log
 
 - **Branches**: `feat/NNN-slug`, `fix/NNN-slug`, `chore/NNN-slug`
 - **Commits**: `feat: description (#NNN)`, `fix: description (#NNN)`, `chore: description (#NNN)`
+- **Multi-module commits**: use Conventional Commits scope — `feat(module-name): description (#NNN)`
 - **Plan files**: `plans/NNN-slug.md` — zero-pad to 3 digits (e.g. `042`)
 - **Slugs**: lowercase, hyphen-separated, max 5 words
 
 ## Commit & PR Rules
 
 - Every commit that implements feature/fix work must reference the issue: `(#NNN)`
-- PR title follows the same convention: `feat: description (#NNN)`
+- PR title follows the same convention: `feat: description (#NNN)` or `feat(module): description (#NNN)` for module-scoped work
 - PR body must include `Closes #NNN` on its own line — this auto-closes the issue on merge
 - Update `status` in `plans/registry.json` as work progresses: `planned → in-progress → review → done`
+- For multi-module repos: add a `module:` GitHub label to the issue and a `"module"` field to the registry entry
 
 ## What Counts as a "New Feature or Bug Fix"
 

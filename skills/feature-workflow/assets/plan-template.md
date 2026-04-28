@@ -1,5 +1,6 @@
 # #NNN: Title
 **Type**: feature | bug | chore
+**Module**: <module-name> | (root)
 **Status**: planned
 **GitHub**: https://github.com/org/repo/issues/NNN
 **Branch**: feat/NNN-slug
