@@ -1,44 +1,71 @@
 # #NNN: Title
-**Type**: feature | bug | chore
-**Module**: <module-name> | (root)
-**Status**: planned
-**GitHub**: https://github.com/org/repo/issues/NNN
-**Branch**: feat/NNN-slug
+
+**GitHub Issue**: [#NNN](https://github.com/org/repo/issues/NNN)
 
 ## Progress
 
-- [ ] GitHub issue created (#NNN)
-- [ ] Plan file written (`plans/NNN-slug.md`)
-- [ ] Registry updated (`plans/registry.json`)
-- [ ] Branch created (`feat/NNN-slug`)
-- [x] T1: <first task title>
+- [ ] T1: <first task title>
 - [ ] T2: <second task title>
 - [ ] T3: <third task title>
-- [ ] Tests passing (`go test ./<pkg>/` or equivalent)
-- [ ] PR opened (`Closes #NNN`)
-
----
 
 ## Problem / Goal
 
 <!-- What is broken or missing? What does success look like? -->
 
-## Approach
+## Goals
+
+<!-- What must be true when this change is complete? -->
+
+## Non-goals
+
+<!-- What is explicitly out of scope? -->
+
+## Proposed Design
 
 <!-- How will this be solved? Key design decisions, trade-offs, alternatives rejected. -->
 
----
+## Affected Modules
+
+<!-- Which packages, commands, applications, or systems will change? -->
 
 ## Tasks
 
 ### T1: <First task title>
-**Status**: done
-**Notes**: <!-- What was decided or discovered while doing this. -->
+
+**Outcome**: <!-- What this task delivers. -->
+
+**Verification**: <!-- Focused test or check that proves this task is complete. -->
+
+**Notes**: <!-- Technical discoveries, blockers, and evidence. -->
 
 ### T2: <Second task title>
-**Status**: in-progress
-**Notes**: <!-- What was decided or discovered while doing this. -->
+
+**Outcome**:
+
+**Verification**:
+
+**Notes**:
 
 ### T3: <Third task title>
-**Status**: todo
+
+**Outcome**:
+
+**Verification**:
+
 **Notes**:
+
+## Risks and Compatibility
+
+<!-- Breaking changes, edge cases, backward compatibility, and rollback concerns. -->
+
+## Verification
+
+<!-- End-to-end checks and acceptance criteria for the complete change. -->
+
+## Rollout
+
+<!-- Deployment order, feature flags, monitoring, or state that no special rollout is needed. -->
+
+## Decision Log
+
+<!-- Add dated technical decisions with rationale and rejected alternatives. -->
