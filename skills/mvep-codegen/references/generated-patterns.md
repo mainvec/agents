@@ -136,7 +136,7 @@ type CmdReq  struct { Cmd any; Headers map[string]string; Payload []byte }
 type CmdResp struct { Headers map[string]string; Payload []byte; Error *ErrorInfo }
 ```
 
-HTTP transport prefixes header keys with `x-mvp-`.
+HTTP transport prefixes header keys with `x-mvep-`.
 
 ### `PackageHandler`
 

@@ -178,7 +178,7 @@ import type { myservicens as types } from '../myservice';
 function authHeader(getToken: () => string): ClientInterceptor {
     return async (ctx, req, next) => {
         const t = getToken();
-        if (t) (req.headers ??= {})['auth'] = t;  // sent as x-mvp-auth
+        if (t) (req.headers ??= {})['auth'] = t;  // sent as x-mvep-auth
         return next(ctx, req);
     };
 }
@@ -259,5 +259,5 @@ js/api/
 
 ### Header / Auth Convention
 
-- Headers added by the client are prefixed with `x-mvp-` over HTTP.
+- Headers added by the client are prefixed with `x-mvep-` over HTTP.
 - The `auth` header is the convention for bearer tokens; server-side `AuthInterceptor` reads it via a `TokenValidator` implementation.
