@@ -64,4 +64,4 @@ The Progress checkbox is the only task completion state; do not add a separate t
 ## Relationship to Other Instructions
 
 - For **Go code**: also follow `test-first.instructions.md` — write a failing test before production code.
-- For **mvpapi changes**: also follow `mvp-codegen` skill — edit spec, re-run generator, implement `runXxxCmd`.
+- For **mvepapi changes**: also follow `mvep-codegen` skill — edit spec, re-run generator, implement `runXxxCmd`.

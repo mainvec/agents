@@ -1,27 +1,27 @@
-# MVP Spec Format Reference
+# MVEP Spec Format Reference
 
-Specs live under `mvpapi/spec/*.json` (or `*.jsonc`) and are validated against:
+Specs live under `mvepapi/spec/*.json` (or `*.jsonc`) and are validated against:
 
 ```
-https://spec.mainvec.com/mvpspec/0.2/schema/2026-01-15
+https://spec.mainvec.com/mvepspec/0.2/schema/2026-01-15
 ```
 
-Legacy `https://spec.mainvec.com/mvepspec/0.1/...` schemas are still supported for backward compatibility.
+Specs pinned to earlier schema URLs continue to validate for backward compatibility.
 
 ## Top-Level Shape
 
 ```jsonc
 {
   "$id": "myservice",
-  "$schema": "https://spec.mainvec.com/mvpspec/0.2/schema/2026-01-15",
+  "$schema": "https://spec.mainvec.com/mvepspec/0.2/schema/2026-01-15",
   "name": "myservice",
   "namespace": "myservicens",
   "title": "My Service API",
   "version": "v0.1",
 
   "gen_options": {
-    "go_package":     "github.com/acme/myservice/mvpapi/go;myservice",
-    "go_api_package": "github.com/acme/myservice/mvpapi/go/api;api",
+    "go_package":     "github.com/acme/myservice/mvepapi/go;myservice",
+    "go_api_package": "github.com/acme/myservice/mvepapi/go/api;api",
     "format": "plain"
   },
 

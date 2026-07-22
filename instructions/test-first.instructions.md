@@ -18,7 +18,7 @@ For **any new feature or behavior change**, a test case MUST be written and comm
 
 Any of the following requires a test first:
 - A new exported function, method, type, or interface
-- A new CLI command (in `mvpapi/iulink/go/*_impl.go` or `mvpapi/iulinkd/go/*_impl.go`)
+- A new CLI command (in `mvepapi/iulink/go/*_impl.go` or `mvepapi/iulinkd/go/*_impl.go`)
 - A new broker driver, transport driver, or registry entry
 - A new code path, branch, or option flag in existing code
 - A bug fix (write a regression test that reproduces the bug first)
@@ -39,7 +39,7 @@ Pure refactors with no behavior change are exempt, but existing tests must still
 3. Run `go test -run TestXxx ./<pkg>/` and report the failure.
 4. Implement the minimum code to pass.
 5. Run `go test -run TestXxx ./<pkg>/`, then `go test ./<pkg>/` for the package.
-6. If the change touches generated code, update specs in `mvpapi/spec/` and re-run `mvpapi/generate_api.sh` — never hand-edit generated files.
+6. If the change touches generated code, update specs in `mvepapi/spec/` and re-run `mvepapi/generate_api.sh` — never hand-edit generated files.
 
 ## When to Push Back
 

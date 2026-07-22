@@ -1,15 +1,15 @@
 # Typed Client Patterns
 
-Generated MVP code gives you raw types and a `Package`. To consume them ergonomically, wrap the runtime client in a typed struct.
+Generated MVEP code gives you raw types and a `Package`. To consume them ergonomically, wrap the runtime client in a typed struct.
 
-## Go Client (`mvp/client`)
+## Go Client (`mvep/client`)
 
 ### Plain Use
 
 ```go
 import (
-    "github.com/mainvec/mvp/mvpgo/mvp/client"
-    "github.com/acme/myservice/mvpapi/go/api"
+    "github.com/mainvec/mvep/runtime/go/mvep/client"
+    "github.com/acme/myservice/mvepapi/go/api"
 )
 
 c, err := client.NewClient(client.ClientConfig{
@@ -47,7 +47,7 @@ type ClientConfig struct {
     Encoder     string                 // default "application/json"
     Timeout     time.Duration          // default 30s
     HTTPClient  *http.Client           // optional
-    Interceptor mvp.ClientInterceptor  // optional
+    Interceptor mvep.ClientInterceptor  // optional
 }
 ```
 
@@ -82,10 +82,10 @@ func New(cfg Config) (*MyClient, error) {
     c, err := client.NewClient(client.ClientConfig{
         BaseURL: cfg.BaseURL,
         Timeout: cfg.Timeout,
-        Interceptor: mvp.ChainClient(
-            mvp.ClientLoggingInterceptor(),
-            mvp.AuthHeaderInterceptor(tp),
-            mvp.RetryInterceptor(3, time.Second),
+        Interceptor: mvep.ChainClient(
+            mvep.ClientLoggingInterceptor(),
+            mvep.AuthHeaderInterceptor(tp),
+            mvep.RetryInterceptor(3, time.Second),
         ),
     })
     if err != nil { return nil, err }
@@ -120,7 +120,7 @@ func (c *MyClient) GetUserProfile(ctx context.Context, userID string) (*api.User
 }
 ```
 
-## TypeScript Client (`@mainvec/mvpjs`)
+## TypeScript Client (`@mainvec/mvep`)
 
 The generated `js/api/` contains:
 
@@ -154,7 +154,7 @@ ns.UserRegisterCmd = class UserRegisterCmd {
 
 ```ts
 // js/api/client/myservice_package.ts
-import type { Package } from '@mainvec/mvpjs';
+import type { Package } from '@mainvec/mvep';
 import * as pkg from '../myservice_package.js';
 
 export class MyServicePackage implements Package {
@@ -170,7 +170,7 @@ export class MyServicePackage implements Package {
 import {
     newClient, chainClient,
     type Client, type PackageClient, type ClientInterceptor,
-} from '@mainvec/mvpjs';
+} from '@mainvec/mvep';
 import { MyServicePackage } from './myservice_package';
 import { myservicens } from '../myservice';
 import type { myservicens as types } from '../myservice';
@@ -253,7 +253,7 @@ js/api/
 ├── <service>_package.js          # ⛔ generated
 └── client/                       # ✏️ hand-written
     ├── <service>_client.ts       # typed client with auth & methods
-    ├── <service>_package.ts      # mvpjs Package adapter
+    ├── <service>_package.ts      # mvep Package adapter
     └── index.ts                  # barrel exports
 ```
 

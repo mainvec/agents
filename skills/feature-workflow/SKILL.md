@@ -83,7 +83,7 @@ Path: `plans/NNN-slug.md` (zero-pad the issue number to 3 digits, e.g. `042`). U
 ## Step 4 — Implement and Maintain Task Progress
 
 - For **Go code**: follow `test-first` instructions — write a failing test before any production code.
-- For **mvpapi / spec changes**: follow `mvp-codegen` skill — edit spec, regenerate, then implement `runXxxCmd`.
+- For **mvepapi / spec changes**: follow `mvep-codegen` skill — edit spec, regenerate, then implement `runXxxCmd`.
 - For all other code: work in the branch, keep commits focused.
 
 For a substantial plan:
