@@ -9,8 +9,8 @@ Instructions for AI coding agents and human contributors working in this repo.
 ## Workflow
 
 Follow the mainvec development workflow:
-https://github.com/mainvec/agents/blob/main/instructions/feature-workflow.instructions.md
-(team members have it locally under `~/.mainvec/agents`). CI checks PR titles
+https://github.com/mainvec/agents/blob/main/com.github.copilot/rules/feature-workflow.instructions.md
+(team members have it through the `mainvec` agent plugin). CI checks PR titles
 and plan numbering.
 
 Changelog: <!-- "generated from PR titles at release; do not edit CHANGELOG.md" or "add one line under Unreleased" -->
