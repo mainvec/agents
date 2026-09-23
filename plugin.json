@@ -1,0 +1,8 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "mainvec",
+  "description": "Development workflow and technology skills for mainvec projects",
+  "version": "0.2.0",
+  "repository": "https://github.com/mainvec/agents",
+  "license": "MIT"
+}

@@ -4,52 +4,45 @@ Public Copilot instructions and skills for all mainvec projects: the
 development workflow, test-first rules, and technology skills. Internal-only
 material lives in the private `mainvec/agents-internal` repo.
 
+This repo is an [Agent Plugin](https://agent-plugins.org/) named `mainvec`, so VS Code, the Copilot CLI, and the Copilot app load its skills without copying files.
+
 ## Structure
 
 ```
-instructions/   — .instructions.md files (Copilot instruction rules)
-skills/         — skill folders, each with a SKILL.md and optional assets/
+plugin.json                  — Agent Plugins 1.0 manifest (name, version)
+skills/                      — skill folders, each with a SKILL.md and optional assets/
+com.github.copilot/rules/    — Copilot instruction files (.instructions.md)
 ```
 
 ## Setup (new machine)
 
-Clone the repos and link each one under `~/.mainvec/`:
+Install the plugin; it provides both the skills and the instructions. Pick one:
 
-```bash
-git clone https://github.com/mainvec/agents ~/Development/mainvec/agents
-mkdir -p ~/.mainvec
-ln -s ~/Development/mainvec/agents ~/.mainvec/agents
+- **No clone (simplest):** in VS Code run **Chat: Install Plugin From Source** and enter `https://github.com/mainvec/agents`. VS Code clones it and checks for updates about every 24 hours.
+- **From a clone (to edit skills or rules):** clone the repo and register the folder in your VS Code **User** settings. Changes apply on `git pull`.
 
-# team members only (private)
-git clone https://github.com/mainvec/agents-internal ~/Development/mainvec/agents-internal
-ln -s ~/Development/mainvec/agents-internal ~/.mainvec/agents-internal
-```
+  ```bash
+  git clone https://github.com/mainvec/agents ~/Development/mainvec/agents
+  ```
 
-> Use absolute targets (not relative paths) so the symlinks resolve from any working directory.
+  ```json
+  "chat.pluginLocations": {
+  	"/Users/<you>/Development/mainvec/agents": true
+  }
+  ```
 
-Add the directories to your VS Code **User** settings so they are available in every workspace opened with that profile:
+- **Copilot CLI:** `copilot plugin install mainvec/agents`.
 
-```json
-{
-	"chat.instructionsFilesLocations": {
-		"~/.mainvec/agents/instructions": true,
-		"~/.mainvec/agents-internal/instructions": true
-	},
-	"chat.agentSkillsLocations": {
-		"~/.mainvec/agents/skills": true,
-		"~/.mainvec/agents-internal/skills": true
-	}
-}
-```
+Team members install the private `mainvec/agents-internal` plugin the same way.
 
-Merge these entries with any existing values for the same settings. Settings Sync can carry the configuration to another machine, but the clones and symlinks must also exist there. Adding another repo later is one more symlink and one more line per setting.
+Skills from a plugin are invoked with the plugin prefix, for example `/mainvec:feature-workflow`.
 
-Other agent tools: link the skill folders into that tool's skills directory, for example `ln -s ~/.mainvec/agents/skills/feature-workflow ~/.claude/skills/`.
+Other agent tools read the same `SKILL.md` format ([agentskills.io](https://agentskills.io/)); point them at `skills/`. The `com.github.copilot/` folder is Copilot-specific and other tools ignore it.
 
 ## Discovery behavior
 
 - Instructions without an `applyTo` pattern load when their description matches the current task or when they are attached manually. This keeps specialized workflows out of unrelated requests.
-- Skills load on demand when their description matches the task and are also available as slash commands, such as `/feature-workflow`.
+- Skills load on demand when their description matches the task and are also available as slash commands, such as `/mainvec:feature-workflow`.
 - Repository instructions may load alongside these personal instructions. Personal instructions take precedence if they conflict.
 
 ## Verify setup
@@ -60,8 +53,8 @@ Other agent tools: link the skill folders into that tool's skills directory, for
 
 ## Contributing
 
-- Edit skills and instructions directly in this repo, through a pull request.
-- Machines pick up changes on the next `git pull`.
+- Edit skills and rules directly in this repo, through a pull request.
+- **Bump `version` in `plugin.json`** in any PR that changes skills or rules; plugins installed from the Git URL only update when the version changes. Clone-based setups pick up changes on `git pull`.
 - Content here is public. Anything you would not want a competitor to read goes to `mainvec/agents-internal`.
 
 ## How the rules reach everyone
@@ -71,7 +64,7 @@ the rules through a channel it already uses:
 
 | Audience | Mechanism |
 |---|---|
-| Teammates and their local agents | This repo and `agents-internal`, linked under `~/.mainvec/` |
+| Teammates and their local agents | The `mainvec` and `mainvec-internal` plugins |
 | Outside contributors | Org defaults in the public `mainvec/.github` repo: `CONTRIBUTING.md`, issue and PR templates |
 | Every pull request, human or agent | Reusable checks in `mainvec/.github` (PR title, plan numbering), called from each repo |
 | Cloud and outside agents | Each repo's `AGENTS.md`: project rules plus one line linking to this repo's workflow |
