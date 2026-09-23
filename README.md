@@ -1,6 +1,8 @@
 # agents
 
-Shared Copilot skills, instructions, and prompts for all mainvec projects.
+Public Copilot instructions and skills for all mainvec projects: the
+development workflow, test-first rules, and technology skills. Internal-only
+material lives in the private `mainvec/agents-internal` repo.
 
 ## Structure
 
@@ -11,29 +13,38 @@ skills/         — skill folders, each with a SKILL.md and optional assets/
 
 ## Setup (new machine)
 
-Clone the repo and symlink it to `~/.mainvec`:
+Clone the repos and link each one under `~/.mainvec/`:
 
 ```bash
 git clone https://github.com/mainvec/agents ~/Development/mainvec/agents
-ln -s ~/Development/mainvec/agents ~/.mainvec
+mkdir -p ~/.mainvec
+ln -s ~/Development/mainvec/agents ~/.mainvec/agents
+
+# team members only (private)
+git clone https://github.com/mainvec/agents-internal ~/Development/mainvec/agents-internal
+ln -s ~/Development/mainvec/agents-internal ~/.mainvec/agents-internal
 ```
 
-> Use the full `~/Development/mainvec/agents` path (not a relative path) so the symlink resolves correctly from any working directory.
+> Use absolute targets (not relative paths) so the symlinks resolve from any working directory.
 
-Add the shared directories to your VS Code **User** settings so they are available in every workspace opened with that profile:
+Add the directories to your VS Code **User** settings so they are available in every workspace opened with that profile:
 
 ```json
 {
 	"chat.instructionsFilesLocations": {
-		"~/.mainvec/instructions": true
+		"~/.mainvec/agents/instructions": true,
+		"~/.mainvec/agents-internal/instructions": true
 	},
 	"chat.agentSkillsLocations": {
-		"~/.mainvec/skills": true
+		"~/.mainvec/agents/skills": true,
+		"~/.mainvec/agents-internal/skills": true
 	}
 }
 ```
 
-Merge these entries with any existing values for the same settings. Settings Sync can carry the configuration to another machine, but the repository and symlink must also exist there.
+Merge these entries with any existing values for the same settings. Settings Sync can carry the configuration to another machine, but the clones and symlinks must also exist there. Adding another repo later is one more symlink and one more line per setting.
+
+Other agent tools: link the skill folders into that tool's skills directory, for example `ln -s ~/.mainvec/agents/skills/feature-workflow ~/.claude/skills/`.
 
 ## Discovery behavior
 
@@ -49,5 +60,22 @@ Merge these entries with any existing values for the same settings. Settings Syn
 
 ## Contributing
 
-- Edit skills and instructions directly in this repo.
-- Commit and push — all machines sharing the symlink get the update on next `git pull`.
+- Edit skills and instructions directly in this repo, through a pull request.
+- Machines pick up changes on the next `git pull`.
+- Content here is public. Anything you would not want a competitor to read goes to `mainvec/agents-internal`.
+
+## How the rules reach everyone
+
+Nothing from this repo is copied into project repositories. Each audience gets
+the rules through a channel it already uses:
+
+| Audience | Mechanism |
+|---|---|
+| Teammates and their local agents | This repo and `agents-internal`, linked under `~/.mainvec/` |
+| Outside contributors | Org defaults in the public `mainvec/.github` repo: `CONTRIBUTING.md`, issue and PR templates |
+| Every pull request, human or agent | Reusable checks in `mainvec/.github` (PR title, plan numbering), called from each repo |
+| Cloud and outside agents | Each repo's `AGENTS.md`: project rules plus one line linking to this repo's workflow |
+
+When a workflow rule changes here, update `mainvec/.github` `CONTRIBUTING.md`
+and its checks in the same change set. The `AGENTS.md` template is at
+`skills/feature-workflow/assets/AGENTS-template.md`.
