@@ -51,3 +51,23 @@ Merge these entries with any existing values for the same settings. Settings Syn
 
 - Edit skills and instructions directly in this repo.
 - Commit and push — all machines sharing the symlink get the update on next `git pull`.
+
+## How the rules reach everyone
+
+This repo is private, so it serves the **team**. Outside contributors and cloud
+agents (Copilot coding agent, Codex, Claude Code on CI) never see `~/.mainvec`.
+The same workflow therefore lives in three layers, with this repo as the source
+of truth:
+
+| Layer | Audience | Where | Content |
+|---|---|---|---|
+| Team agents | Teammates' local agents | this repo → `~/.mainvec` | Full instructions and skills |
+| Repo | Anyone who clones a repo, and every agent tool | `AGENTS.md` at each repo root | Short project rules and a summary of the workflow |
+| Org defaults | Human contributors on GitHub | public `mainvec/.github` repo | `CONTRIBUTING.md`, issue/PR/discussion templates, reusable CI workflows |
+
+When a workflow rule changes here, update the `AGENTS.md` template
+(`skills/feature-workflow/assets/AGENTS-template.md`) and `mainvec/.github`
+`CONTRIBUTING.md` in the same change set.
+
+Other agent tools: symlink the skill folders into that tool's skills directory
+(for example `ln -s ~/.mainvec/skills/feature-workflow ~/.claude/skills/`).
