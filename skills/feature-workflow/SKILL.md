@@ -53,7 +53,7 @@ gh label create design --color "#d4c5f9" --description "Plan being designed or r
 gh label create icebox --color "#c5def5" --description "Parked: not on the current roadmap"
 ```
 
-Large efforts: open an umbrella issue that lists child issues (`gh issue create` per child, then link them as sub-issues). Each child gets its own branch, PR, and plan; the umbrella plan records scope and decisions only.
+Large efforts: open one issue per child (`gh issue create`) and put each in the milestone (`--milestone`). The milestone is the scope; do not also list the children in an umbrella issue or link them as sub-issues. Each child gets its own branch, PR, and plan. Open a release issue only for the release's own work (acceptance, the cut, publishing); its plan holds those tasks and the decisions that span the children. Sub-issues split one feature into parts.
 
 The issue owns overall lifecycle, assignee, priority, dependencies, discussion, acceptance, and open/closed state. Do not duplicate the plan's detailed task checklist in the issue. GitHub Projects are optional views over issues.
 

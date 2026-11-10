@@ -19,6 +19,16 @@ These rules apply to **all projects** and **all languages**, for team and open-s
 
 Never encode state in file names (`DRAFT-`, `WIP-`). State lives on the issue and PR.
 
+## Planning a Release
+
+A release is planned in its GitHub milestone, not in a plan file.
+
+- **The milestone is the scope.** An issue ships in the release when it is in the milestone. The milestone description states the goal, the acceptance, and what is out, and changes only when they do.
+- **Each issue owns its design.** A substantial issue has its own plan; the release does not repeat it.
+- **A release issue only for the release's own work**, such as acceptance on clean machines, the cut, and publishing. Its plan holds those tasks and the decisions that span issues. It never lists the milestone's issues and never copies their specs.
+- **No second scope list.** Not a plan `Progress` list of issues, and not sub-issues of the release issue: two lists drift apart. Use sub-issues to split one feature into parts.
+- **Order with labels or a project board**, never a file every PR edits.
+
 ## Discussion-First Projects
 
 If a project routes ideas and bug triage through GitHub Discussions (issue templates disable blank issues and link to Discussions):
@@ -99,7 +109,7 @@ The Progress checkbox is the only task completion state; do not add a separate t
 ## Avoiding Merge Conflicts
 
 - **Short-lived branches.** Merge small PRs into `main` often; rebase on `main` before merging; prefer squash merges.
-- **No long-lived umbrella branches.** Large efforts are an umbrella issue with child issues. Each child has its own branch, PR, and plan; the umbrella plan holds scope and decisions only.
+- **No long-lived umbrella branches.** Large efforts are split into child issues, each with its own branch, PR, and plan. A release's scope is its milestone (see Planning a Release); an umbrella plan holds only its own tasks and the decisions that span the children.
 - **No shared index files.** Do not maintain roadmap, registry, or plan-index files that every PR edits; milestones and labels are the index.
 - **Changelog.** If the repo generates its changelog from PR titles at release time, do not edit `CHANGELOG.md` in feature PRs. Otherwise add exactly one line under `Unreleased`.
 - **Generated code.** Never hand-merge generated files. On conflict, take either side, rerun the generator, and commit the result. CI should verify generated output is current.
