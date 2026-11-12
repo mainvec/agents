@@ -1,6 +1,7 @@
 # #NNN: Title
 
 **GitHub Issue**: [#NNN](https://github.com/org/repo/issues/NNN)
+**Design accepted**: YYYY-MM-DD <!-- the day the plan-only PR merged; tells a reader how old the design is -->
 
 ## Progress
 

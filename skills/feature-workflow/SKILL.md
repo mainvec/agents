@@ -1,6 +1,6 @@
 ---
 name: feature-workflow
-description: "Use when starting a feature, bug fix, performance change, or chore; creating a GitHub issue, discussion, issue-numbered branch, Git worktree, or parallel agent workspace; writing a technical plan; maintaining task progress; committing; opening a draft or ready PR; archiving a completed plan; or icebox/design labels."
+description: "Use when starting a feature, bug fix, performance change, or chore; claiming an issue; creating a GitHub issue, discussion, issue-numbered branch, Git worktree, or parallel agent workspace; writing or reviewing a technical plan (plan-only PR); recording a decision; planning or cutting a release; maintaining task progress; committing; opening a draft or ready PR; archiving a completed plan; or icebox/design/next labels."
 ---
 
 # Feature Workflow
@@ -10,8 +10,10 @@ End-to-end process for feature, bug fix, performance, and chore work. Requires `
 ## Workflow Overview
 
 ```
-[discussion]  →  GitHub issue  →  branch  →  [plan if substantial, label design]  →  draft PR  →  implement and update tasks  →  [archive plan in PR]  →  merge
+[discussion]  →  GitHub issue  →  [plan-only PR, label design  →  merge: planned]  →  claim  →  branch  →  draft PR  →  implement and update tasks  →  [archive plan in PR]  →  merge
 ```
+
+Work without a plan skips the bracketed plan step.
 
 ---
 
@@ -51,15 +53,30 @@ gh label create performance --color "#fbca04" --description "Performance improve
 gh label create chore --color "#e4e669" --description "Internal work, no user-facing change"
 gh label create design --color "#d4c5f9" --description "Plan being designed or reviewed"
 gh label create icebox --color "#c5def5" --description "Parked: not on the current roadmap"
+gh label create next --color "#0e8a16" --description "To take up next"
 ```
 
-Large efforts: open one issue per child (`gh issue create`) and put each in the milestone (`--milestone`). The milestone is the scope; do not also list the children in an umbrella issue or link them as sub-issues. Each child gets its own branch, PR, and plan. Open a release issue only for the release's own work (acceptance, the cut, publishing); its plan holds those tasks and the decisions that span the children. Sub-issues split one feature into parts.
+Large efforts: open one issue per child (`gh issue create`) and put each in the milestone (`--milestone`). The milestone is the scope; do not also list the children in an umbrella issue or link them as sub-issues. Each child gets its own branch, PR, and plan. Sub-issues split one feature into parts. Releases are covered in Releasing below.
 
 The issue owns overall lifecycle, assignee, priority, dependencies, discussion, acceptance, and open/closed state. Do not duplicate the plan's detailed task checklist in the issue. GitHub Projects are optional views over issues.
 
 ---
 
-## Step 2 — Create Branch
+## Step 2 — Claim the Issue
+
+Before starting, make sure nobody else has:
+
+```bash
+gh issue view 42 --json assignees -q '.assignees[].login'   # empty, or you
+git ls-remote --heads origin '*/42-*'                       # no branch yet
+gh issue edit 42 --add-assignee @me
+```
+
+An agent claims work for the person running it. When you stop, unassign and comment where the work stands. If a plan for the issue is already on `main`, read it against the current code before building.
+
+---
+
+## Step 3 — Create Branch
 
 Use a normal branch checkout by default:
 
@@ -94,7 +111,7 @@ Worktree rules:
 
 ---
 
-## Step 3 — Create a Plan for Substantial Work
+## Step 4 — Plan Substantial Work Before Building
 
 A plan is required for new behavior, features, exported APIs, commands, drivers, UI screens, protocol or configuration changes, migrations, security-sensitive work, architecture changes, significant refactors, and cross-module work.
 
@@ -109,26 +126,44 @@ Path: `plans/NNN-slug.md`, where `NNN` is **the Step 1 issue number** zero-padde
 - Add one matching `## Tasks` block per Progress item.
 - Give each task an Outcome, focused Verification, and Notes field.
 - Do not include workflow checkboxes or a separate task Status field.
-- Review the plan before substantial implementation. Use a planning-only PR only for unusually risky or cross-team designs.
+
+**Plan-only PR (the usual path).** The design is reviewed before any code, and merging it makes the plan the accepted design on `main`:
+
+```bash
+gh issue edit 42 --add-label design
+git checkout -b feat/42-slug origin/main
+# write plans/042-slug.md, with **Design accepted** left as the merge date
+git commit -m "docs(plans): plan thing (#42)"
+gh pr create --title "docs(plans): plan thing (#42)" --body "$(printf 'Refs #42\n\n## Design\n<the questions to review>')"
+# after merge
+gh issue edit 42 --remove-label design
+```
+
+Implementation then starts from `main` on a fresh `feat/42-slug` branch, after claiming the issue.
+
+- **Plan just in time:** when the work is likely to start within a few weeks.
+- **A spike may come first** when only trying can answer a question; record what it showed in the plan's Notes and discard the code.
+- **When work starts at once**, the plan may be the implementation branch's first commit instead, as long as it is reviewed before substantial implementation.
 
 ---
 
-## Step 4 — Implement and Maintain Task Progress
+## Step 5 — Implement and Maintain Task Progress
 
 - For **Go code**: follow `test-first` instructions — write a failing test before any production code.
 - For **mvepapi / spec changes**: follow `mvep-codegen` skill — edit spec, regenerate, then implement `runXxxCmd`.
 - For all other code: work in the branch, keep commits focused.
 
 For a substantial plan:
-1. Work on one logical task at a time when practical.
-2. Implement the task and run its focused Verification check.
-3. Check the matching Progress item only after that check succeeds.
-4. Record technical discoveries, blockers, changed assumptions, and evidence in Notes.
-5. Update Proposed Design, Risks, Rollout, or Decision Log when understanding changes.
+1. If the plan was accepted earlier, first read it against the current code and update anything that has moved.
+2. Work on one logical task at a time when practical.
+3. Implement the task and run its focused Verification check.
+4. Check the matching Progress item only after that check succeeds.
+5. Record technical discoveries, blockers, changed assumptions, and evidence in Notes.
+6. Update Proposed Design, Risks, Rollout, or Decision Log when understanding changes. A decision that reaches beyond this plan also becomes a decision record (see below).
 
 ---
 
-## Step 5 — Commit
+## Step 6 — Commit
 
 Each commit that implements work must reference the issue:
 
@@ -147,7 +182,7 @@ git commit -m "fix(core): handle nil peer conn (#42)"
 
 ---
 
-## Step 6 — Open PR
+## Step 7 — Open PR
 
 Before opening the PR, complete all intended Progress items or move unfinished scope to a follow-up issue and plan. Open it as a **draft** as soon as implementation starts if others need visibility, and mark it ready when done.
 
@@ -170,7 +205,7 @@ Rules:
 
 ---
 
-## Step 7 — After Merge
+## Step 8 — After Merge
 
 - GitHub issue auto-closes (via `Closes #NNN`)
 - The plan was already archived by the PR's last commit; do not add an archive commit on `main`.
@@ -188,6 +223,27 @@ Rules:
 
 ---
 
+## Decision Records
+
+A decision that outlives one plan, or applies across issues or releases, gets its own file in `docs/decisions/`, named by the date it was made and a slug. Use [./assets/decision-template.md](./assets/decision-template.md):
+
+```bash
+cp <skill>/assets/decision-template.md docs/decisions/$(date +%F)-slug.md
+```
+
+Never edit a record later except its Status. A changed decision is a new record whose Context names the old one, and the old record's Status becomes `Superseded by <new file>`. Commit a record with the change that needs it, or alone as `docs: record <decision> (#NNN)`.
+
+---
+
+## Releasing
+
+- **Scope:** the milestone. Its description holds the goal, the acceptance, and what is out.
+- **Order:** add the `next` label to the few issues to take up next, and remove it when they start.
+- **Process:** `docs/release.md`, the runbook every release follows. Start one from [./assets/release-runbook-template.md](./assets/release-runbook-template.md) and change it only when the process changes.
+- **Each release:** one release issue in the milestone that ticks off the runbook's steps and records what that release found. It has no plan file and does not list the milestone's issues.
+
+---
+
 ## Quick Reference
 
 | Item | Pattern |
@@ -200,12 +256,19 @@ Rules:
 | Task progress | `## Progress` task checkboxes, matched by detailed `## Tasks` blocks |
 | Archived plan | `plans/archived/YYYY-MM-DD-NNN-slug.md`, moved in the PR's last commit |
 | Parked work | `icebox` label; plan in `plans/icebox/NNN-slug.md` |
-| Plan in design | `design` label on the issue |
+| Plan in design | `design` label on the issue; a plan-only PR with `Refs #NNN` |
+| Planned | plan merged to `main`, `design` label removed |
+| Claim | `gh issue edit NNN --add-assignee @me` after checking assignee and branches |
+| Up next | `next` label |
+| Release scope | the milestone |
+| Release process | `docs/release.md`, ticked off in one release issue |
+| Decision record | `docs/decisions/YYYY-MM-DD-slug.md` |
 
 ## Parallel Work
 
 - Keep normal branch checkout as the default; use worktrees only when the developer requests parallel or multi-agent work.
 - Use one issue, plan, branch, worktree, and VS Code window per independently shippable parallel change.
-- Split large efforts into parent and child issues so contributors own separate plans.
+- Split large efforts into child issues so contributors own separate plans.
+- Claim an issue before starting, so two people or agents do not take the same one.
 - Avoid multiple contributors editing one plan concurrently.
 - Represent dependencies with linked GitHub issues rather than a shared repository registry.
