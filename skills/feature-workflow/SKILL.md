@@ -1,6 +1,6 @@
 ---
 name: feature-workflow
-description: "Use when starting a feature, bug fix, performance change, or chore; claiming an issue; creating a GitHub issue, discussion, issue-numbered branch, Git worktree, or parallel agent workspace; writing or reviewing a technical plan (plan-only PR); recording a decision; planning or cutting a release; maintaining task progress; committing; opening a draft or ready PR; archiving a completed plan; or icebox/design/next labels."
+description: "Use when starting a feature, bug fix, performance change, or chore; claiming an issue; creating a GitHub issue, discussion, issue-numbered branch, Git worktree, or parallel agent workspace; writing or reviewing a technical plan (plan-only PR); recording a decision; planning or cutting a release; maintaining task progress; committing; opening a draft or ready PR; archiving a completed plan; or icebox/next labels."
 ---
 
 # Feature Workflow
@@ -10,10 +10,10 @@ End-to-end process for feature, bug fix, performance, and chore work. Requires `
 ## Workflow Overview
 
 ```
-[discussion]  →  GitHub issue  →  [plan-only PR, label design  →  merge: planned]  →  claim  →  branch  →  draft PR  →  implement and update tasks  →  [archive plan in PR]  →  merge
+[discussion]  →  GitHub issue  →  claim  →  branch  →  draft PR [plan first, agreed before code]  →  implement and update tasks  →  [archive plan in PR]  →  merge
 ```
 
-Work without a plan skips the bracketed plan step.
+Work without a plan skips the plan. When planning ahead, the plan merges first in its own plan-only PR, and the implementation PR starts from it later.
 
 ---
 
@@ -51,7 +51,6 @@ gh label create feature --color "#0075ca" --description "New feature or request"
 gh label create bug --color "#d73a4a" --description "Something is broken"
 gh label create performance --color "#fbca04" --description "Performance improvement"
 gh label create chore --color "#e4e669" --description "Internal work, no user-facing change"
-gh label create design --color "#d4c5f9" --description "Plan being designed or reviewed"
 gh label create icebox --color "#c5def5" --description "Parked: not on the current roadmap"
 gh label create next --color "#0e8a16" --description "To take up next"
 ```
@@ -127,23 +126,27 @@ Path: `plans/NNN-slug.md`, where `NNN` is **the Step 1 issue number** zero-padde
 - Give each task an Outcome, focused Verification, and Notes field.
 - Do not include workflow checkboxes or a separate task Status field.
 
-**Plan-only PR (the usual path).** The design is reviewed before any code, and merging it makes the plan the accepted design on `main`:
+**Starting now (the default).** Commit the plan first and open the draft PR; implementation waits until the plan is agreed there:
 
 ```bash
-gh issue edit 42 --add-label design
-git checkout -b feat/42-slug origin/main
-# write plans/042-slug.md, with **Design accepted** left as the merge date
+# on feat/42-slug, after claiming
 git commit -m "docs(plans): plan thing (#42)"
-gh pr create --title "docs(plans): plan thing (#42)" --body "$(printf 'Refs #42\n\n## Design\n<the questions to review>')"
-# after merge
-gh issue edit 42 --remove-label design
+gh pr create --draft --title "feat: thing (#42)" --body "$(printf 'Closes #42\n\n## Plan\n<the questions to review>')"
 ```
 
-Implementation then starts from `main` on a fresh `feat/42-slug` branch, after claiming the issue.
+**Planning ahead.** When the work is weeks away, merge the plan on its own so the accepted design is on `main`:
+
+```bash
+git checkout -b feat/42-slug origin/main
+# write plans/042-slug.md; set **Design accepted** to the merge date
+git commit -m "docs(plans): plan thing (#42)"
+gh pr create --title "docs(plans): plan thing (#42)" --body "$(printf 'Refs #42\n\n## Design\n<the questions to review>')"
+```
+
+Implementation later starts from `main` on a fresh `feat/42-slug` branch, after claiming the issue.
 
 - **Plan just in time:** when the work is likely to start within a few weeks.
 - **A spike may come first** when only trying can answer a question; record what it showed in the plan's Notes and discard the code.
-- **When work starts at once**, the plan may be the implementation branch's first commit instead, as long as it is reviewed before substantial implementation.
 
 ---
 
@@ -190,7 +193,6 @@ Before opening the PR, complete all intended Progress items or move unfinished s
 gh pr create --draft \
   --title "feat: add thing (#42)" \
   --body "$(printf 'Closes #42\n\n## Summary\n<what changed and why>')"
-gh issue edit 42 --remove-label design
 ```
 
 Rules:
@@ -256,8 +258,8 @@ Never edit a record later except its Status. A changed decision is a new record 
 | Task progress | `## Progress` task checkboxes, matched by detailed `## Tasks` blocks |
 | Archived plan | `plans/archived/YYYY-MM-DD-NNN-slug.md`, moved in the PR's last commit |
 | Parked work | `icebox` label; plan in `plans/icebox/NNN-slug.md` |
-| Plan in design | `design` label on the issue; a plan-only PR with `Refs #NNN` |
-| Planned | plan merged to `main`, `design` label removed |
+| Plan in design | an open PR containing the plan: the draft PR's first commit, or a plan-only PR with `Refs #NNN` when planning ahead |
+| Planned ahead | plan merged to `main` by a plan-only PR |
 | Claim | `gh issue edit NNN --add-assignee @me` after checking assignee and branches |
 | Up next | `next` label |
 | Release scope | the milestone |

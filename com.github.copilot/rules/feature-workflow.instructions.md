@@ -12,8 +12,8 @@ These rules apply to **all projects** and **all languages**, for team and open-s
 |---|---|
 | Idea, not yet accepted | A short issue, or a Discussion in discussion-first projects. No plan file. |
 | Accepted | An issue with a milestone. Discussion-first projects open or convert the issue from the discussion and link it. |
-| Being designed | `design` label on the issue, and a plan-only PR adding `plans/NNN-slug.md`. The PR is the design review. |
-| Planned | The plan-only PR merged to `main`, and the `design` label removed. The plan is the accepted design. |
+| Being designed | An open PR that adds `plans/NNN-slug.md`: the plan alone when planning ahead, or as the first commit of the implementation's draft PR. The PR is the design review. |
+| Planned | The plan on `main`, merged by a plan-only PR before the work starts. It is the accepted design. |
 | In progress | The issue is assigned, a branch is open from `main`, and a draft PR shows the work. |
 | Parked | `icebox` label (or leave it as a Discussion); plan, if any, in `plans/icebox/NNN-slug.md` |
 | Done | PR merged with `Closes #NNN`; the plan was archived inside that PR |
@@ -24,13 +24,17 @@ Never encode state in file names (`DRAFT-`, `WIP-`). State lives on the issue an
 
 ## Planning Ahead
 
-A substantial change is designed and reviewed before it is built. Its plan merges to `main` as an accepted design, and implementation follows in later PRs.
+A substantial change is designed and reviewed before it is built. How the plan is reviewed depends on when the work starts:
+
+- **Starting now (the default):** the plan is the first commit of the draft PR, and implementation waits until the plan is agreed in that PR.
+- **Planning ahead:** a plan-only PR merges the plan to `main`, so the accepted design is visible and readable offline before anyone starts. Implementation follows in a later PR.
+
+For both:
 
 - **Plan just in time.** Write a plan when its work is likely to start within a few weeks. A design written long before its work goes stale.
 - **A plan can start with a spike.** When a question can only be answered by trying, try it first, throw the code away, and record what it showed in the plan's Notes.
 - **Re-check before building.** Implementation starts by reading the plan against the current code. Changes go into the plan and its Decision Log.
 - **Accepted means good enough to start, not fixed.** The plan keeps changing as the work teaches something, in the implementation PRs.
-- **When work starts at once**, the plan may be the first commit on the implementation branch instead of its own PR, as long as it is reviewed before substantial implementation.
 
 ## Planning a Release
 
@@ -148,6 +152,7 @@ The Progress checkbox is the only task completion state; do not add a separate t
 - PR title follows the same convention: `feat: description (#NNN)` or `feat(module): description (#NNN)` for module-scoped work
 - PR body must include `Closes #NNN` on its own line — this auto-closes the issue on merge
 - A plan-only PR is the exception: it uses `Refs #NNN`, since the issue stays open for the implementation, and a title like `docs(plans): plan <topic> (#NNN)`
+- No label tracks design state: an open PR containing the plan already says it is being designed
 - For multi-module repos, use `module:` labels on the issue when useful
 - Before merging the PR that completes a plan, make its last commit move the plan to `plans/archived/YYYY-MM-DD-NNN-slug.md` (date = merge day). Never archive with a follow-up commit on `main`.
 
