@@ -45,6 +45,7 @@ Specs pinned to earlier schema URLs continue to validate for backward compatibil
 | `format` | `plain` \| `pb3` | `plain` = Go structs + JSON tags, no protobuf dep. `pb3` = full protobuf. |
 | `go_package` | `<module/path>;<alias>` | Must match the directory's actual Go package |
 | `go_api_package` | `<module/path>;<alias>` | Generated `api/` sub-package path |
+| `cli` | `runtime` \| `legacy` \| `none` | `runtime` (default) = descriptor-driven `cli.New` main; `legacy` = hand-wired `prepareXxxCmd`; `none` = no CLI main. `skipCmd=true` forces `none`. |
 | `edition` | `2023` | Only for `pb3` |
 | `go_default_api_level` | `API_OPAQUE` | Only for `pb3` |
 
